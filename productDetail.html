@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Skincare Master</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns"
+        crossorigin="anonymous">
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+</head>
+
+<body>
+    <!--Nav bar-->
+    <div>
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <p>REVIEW</p>
+            <p class="inSidenav">Product Type</p>
+            <a class="innerSidenav" href="cleanserList.html">cleanser</a>
+            <a class="innerSidenav" href="moisturizerList.html">moisturizer</a>
+            <a class="innerSidenav" href="bodyLotionList.html">body lotion</a>
+            <p class="inSidenav">Skin Concern</p>
+            <a class="innerSidenav" href="AcneList.html">Acne</a>
+            <a class="innerSidenav" href="BlackheadsList.html">Blackheads</a>
+            <a class="innerSidenav" href="WrinklesList.html">Wrinkles</a>
+            <p>ARTICLE</p>
+            <a class="innerSidenav" href="DIYSkincareList.html">DIY Skincare</a>
+            <a class="innerSidenav" href="NutritionList.html">Nutrition</a>
+            <a class="innerSidenav" href="ExpertAdviceList.html">Expert Advice</a>
+            <a href="myAccountPage.html">MY ACCOUNT</a>
+            <button type="button" class="btn btn-dark" id="signOutBtn" onclick="signOut()" style="visibility: hidden;margin-left:150px">Sign Out</button>
+        </div>
+        <a class="backBtn" href="javascript:history.back()">
+            <i class="fas fa-chevron-left" style='font-size:24px'></i>
+        </a>
+        <a class="title justify-content-center" href="index.html">SkincareMaster</a>
+
+        <span class="manuButton" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
+    </div>
+    <!-- Search form -->
+    <div class="row justify-content-center">
+        <form class="example col-10">
+            <input type="text" placeholder="Search.." name="search" id="searchField">
+            <button type="button"><i class="fa fa-search" onclick="search()"></i></button>
+        </form>
+    </div>
+
+    <script id="productDetail-template" type="text/x-handlebars-template">
+        <div class="card" style="padding: 0rem">  
+            <div class="card-body">
+                <h5 class="card-title">{{company}}</h5>
+                <img class="card-img-bottom" src="{{picture}}" alt="Product Page">
+                <p class="card-title">{{productName}}</p>
+                <p> Rating: {{rating}}</p>
+               <i id="favIcon" onclick="favFunction(this)" class="far fa-heart float-right "></i>
+            </div> 
+        </div>  
+    </script>
+
+
+
+
+    <div id="templateProduct">
+
+    </div>
+
+
+    <h5 id="rvTitle" style="text-align: left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REVIEW</h5>
+    <button id="rvBtn" href="#" role="button" class="btn btn-secondary btn-sm" onclick="writeReview()"><i class="fas fa-pencil-alt"></i></button>
+
+
+    <script id="review-template" type="text/x-handlebars-template">
+        <div class="card">
+                <h6 class="card-header">
+                    <p> Rating : {{'rating'}} </p>
+                    <p class="card-text">{{'comment'}}</p>
+                </h6>
+                
+        </div>
+        <br>
+    </script>
+
+    <div id="templateReview">
+
+    </div>
+
+    <script>
+        var products = [
+            //cleanser
+            { 'company': 'Fresh', 'productName': 'Soy Face Cleanser', 'picture': 'img/cleanser3.jpg', 'rating': 4, 'index': 1, 'fav': 30, 'price': 44.00 },
+            { 'company': 'PHILOSOPHY', 'productName': 'Purity Made Simple Cleanser', 'picture': 'img/cleanser4.jpg', 'rating': 3, 'index': 2, 'fav': 40, 'price': 78 },
+            { 'company': 'EVE LOM', 'productName': 'Cleanser/Traitement De Nettoyage', 'picture': 'img/cleanser1.jpg', 'rating': 3, 'index': 3, 'fav': 50, 'price': 33 },
+            { 'company': 'SK-II', 'productName': 'Facial Treatment Cleanser', 'picture': 'img/cleanser2.jpg', 'rating': 5, 'index': 4, 'fav': 60, 'price': 120 },
+
+            // moisturizer
+            { 'company': 'LA MER', 'productName': 'Crème de la Mer', 'picture': 'img/moist3.jpeg', 'rating': 4, 'fav': 40, 'price': 68 },
+            { 'company': "KIEHL'S SINCE 1851", 'productName': 'Ultra Facial Cream', 'picture': 'img/moist1.jpeg', 'rating': 3, 'fav': 50, 'price': 55 },
+            { 'company': 'CLINIQUE', 'productName': 'moisturizing lotion', 'picture': 'img/moist4.jpeg', 'rating': 5, 'fav': 70, 'price': 96 },
+            { 'company': 'SK-II', 'productName': 'R.N.A. POWER Face Cream', 'picture': 'img/moist2.jpg', 'rating': 4, 'fav': 60, 'price': 99 },
+
+            // acne
+            { 'company': 'KATE SOMERVILLE', 'productName': 'EradiKate™ Acne Treatment', 'picture': 'img/Acne1.JPG', 'rating': 4, 'fav': 40, 'price': 26 },
+            { 'company': 'MURAD', 'productName': 'Rapid Relief Acne Spot Treatment', 'picture': 'img/Acne2.JPG', 'rating': 3, 'fav': 30, 'price': 22 },
+
+            //lotion
+            { 'company': 'DONNA KARAN', 'productName': 'Donna Karan Cashmere Mist Body set', 'picture': 'img/lotion1.jpeg', 'rating': 3, 'fav': 30, 'price': 30 },
+            { 'company': 'LORD JONES', 'productName': 'High CBD Formula Body Lotion', 'picture': 'img/lotion2.jpeg', 'rating': 4, 'fav': 40, 'price': 60 },
+            { 'company': "L'OCCITANE", 'productName': 'Shea Butter Rich Body Lotion', 'picture': 'img/lotion4.png', 'rating': 3, 'fav': 50, 'price': 34 },
+            { 'company': 'PHILOSOPHY', 'productName': 'Pure Grace Perfumed Body Lotion', 'picture': 'img/lotion3.jpeg', 'rating': 5, 'fav': 60, 'price': 39 },
+
+            //blackhead
+            { 'company': 'CLINIQUE', 'productName': 'Blackhead Solutions 7 Day Scrub', 'picture': 'img/BlackHead2.JPG', 'rating': 4, 'fav': 30, 'price': 24 },
+            { 'company': 'CAUDALIE', 'productName': 'Instant Detox Mask II', 'picture': 'img/BlackHead1.JPG', 'rating': 5, 'fav': 40, 'price': 39 },
+
+            //wrinkle
+            { 'company': 'ESTÉE LAUDER', 'productName': 'Advanced Night Repair Synchronized Recovery Complex II', 'picture': 'img/Wrinkle1.JPG', 'rating': 3, 'fav': 30, 'price': 98 },
+            { 'company': 'KATE SOMERVILLE', 'productName': 'Instant Detox Mask', 'picture': 'img/Wrinkle2.JPG', 'rating': 4, 'fav': 40, 'price': 60 },
+            { 'company': 'ESTÉE LAUDER', 'productName': 'Perfectionist CPR Wrinkle Lifting', 'picture': 'img/wrinkle3.png', 'rating': 3, 'fav': 50, 'price': 98 },
+            { 'company': 'DR. DENNIS GROSS SKINCARE', 'productName': 'Retinol Wrinkle Recovery Overnight Serum', 'picture': 'img/wrinkle4.png', 'rating': 5, 'fav': 60, 'price': 88 }
+        ]
+
+        var reviewList = [
+            { 'rating': 5, 'comment': 'It is great' },
+            { 'rating': 1, 'comment': 'It is not OK' },
+            { 'rating': 2, 'comment': 'It is soso' },
+            { 'rating': 3, 'comment': 'It is Ok' }
+        ]
+
+        function writeReview() {
+            var qs = new URLSearchParams(window.location.search);
+            var productName = qs.get("product");
+
+            if (sessionStorage.getItem("isLoggedIn") == "yes") {
+                window.location = 'writeReview.html?product=' + productName;
+            }
+            else {
+                if (confirm("Please sign in first!")) {
+                    window.location = 'myAccountPage.html?product=' + productName;
+                }
+            }
+        }
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+        function favFunction(x) {
+            if (sessionStorage.getItem("isLoggedIn") == "yes") {
+                x.classList.toggle("fas");
+                var qs = new URLSearchParams(window.location.search);
+                var productName = qs.get("product");
+                var userName = sessionStorage.getItem("currentUser");
+
+                var favoriteList = JSON.parse(localStorage.getItem(userName + "favoriteList"));
+                for(var i = 0; i < favoriteList.length; i++){
+                    if(favoriteList[i].productName == productName){
+                        return;
+                    }
+                }
+                var entry = {
+                    "productName": productName
+                };
+                
+                favoriteList.push(entry);
+                localStorage.setItem(userName + "favoriteList", JSON.stringify(favoriteList));
+            }
+            else {
+                if (confirm("Please sign in first!")) {
+                    window.location = 'myAccountPage.html?product=' + productName;
+                }
+            }
+
+
+        }
+
+
+
+        $(document).ready(function () {
+            // get url parameters
+            var queryParams = new URLSearchParams(window.location.search);
+            var Name = queryParams.get('product');
+            var type = queryParams.get('type');
+
+            //create a review list for curr product in local storage
+            var reviews = localStorage.getItem(Name);
+            if (!reviews) {
+                localStorage.setItem(Name, JSON.stringify(reviewList));
+            }
+
+            // product template variables
+            var sourceP = $("#productDetail-template").html();
+            var templateP = Handlebars.compile(sourceP);
+            var parentDivP = $("#templateProduct");
+
+            // print out curr product
+            for (var i = 0; i < products.length; i++) {
+                var currData = products[i];
+                if (currData.productName == Name) {
+                    var currHTML = templateP(currData);
+                    parentDivP.append(currHTML);
+                }
+            }
+
+            // review template variables
+            var sourceR = $("#review-template").html();
+            var templateR = Handlebars.compile(sourceR);
+            var parentDivR = $("#templateReview");
+
+            // print out curr products reviews
+            var rList = JSON.parse(localStorage.getItem(Name));
+            if (rList != null) {
+                for (var j = rList.length - 1; j >= 0; j--) {
+                    var currData = rList[j];
+                    var currHTMLR = templateR(currData);
+                    parentDivR.append(currHTMLR);
+                }
+            }
+            if(sessionStorage.getItem("isLoggedIn") == "yes"){
+                document.getElementById("signOutBtn").style.visibility="visible";
+            }
+        });
+
+
+        function search() {
+            var input = document.getElementById("searchField").value;
+            var productList = JSON.parse(localStorage.getItem("productList"));
+            var typeList = JSON.parse(localStorage.getItem("typeList"));
+            var foundProduct = false;
+            var foundType = false;
+            var link;
+            var product;
+            for (var i = 0; i < productList.length; i++) {
+                var currData = productList[i];
+
+                if (currData.toUpperCase() === input.toUpperCase()) {
+                    foundProduct = true;
+                    product = productList[i];
+                }
+            }
+            if (!foundProduct) {
+                for (var i = 0; i < typeList.length; i++) {
+                    var currType = typeList[i].type;
+                    if (currType.toUpperCase() === input.toUpperCase()) {
+                        foundType = true;
+                        link = typeList[i].link;
+                    }
+                }
+            }
+            if (foundProduct) {
+                window.location = "productDetail.html?product=" + product;
+            }
+            else if (foundType) {
+                window.location = link;
+            }
+            else {
+                alert("Sorry, item is not found :(");
+            }
+        }
+        
+        function signOut() {
+            sessionStorage.setItem("isLoggedIn", "no");
+            sessionStorage.setItem("currentUser", "");
+            window.location = 'myAccountPage.html';
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/handlebars-v4.0.11.js"></script>
+
+</body>
+
+</html>

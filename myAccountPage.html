@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Skincare Master</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns"
+        crossorigin="anonymous">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+</head>
+
+<body>
+    <!--Nav bar-->
+    <div>
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <p>REVIEW</p>
+            <p class="inSidenav">Product Type</p>
+            <a class="innerSidenav" href="cleanserList.html">cleanser</a>
+            <a class="innerSidenav" href="moisturizerList.html">moisturizer</a>
+            <a class="innerSidenav" href="bodyLotionList.html">body lotion</a>
+            <p class="inSidenav">Skin Concern</p>
+            <a class="innerSidenav" href="AcneList.html">Acne</a>
+            <a class="innerSidenav" href="BlackheadsList.html">Blackheads</a>
+            <a class="innerSidenav" href="WrinklesList.html">Wrinkles</a>
+            <p>ARTICLE</p>
+            <a class="innerSidenav" href="DIYSkincareList.html">DIY Skincare</a>
+            <a class="innerSidenav" href="NutritionList.html">Nutrition</a>
+            <a class="innerSidenav" href="ExpertAdviceList.html">Expert Advice</a>
+            <a href="myAccountPage.html">MY ACCOUNT</a>
+            <button type="button" class="btn btn-dark" id="signOutBtn" onclick="signOut()" style="visibility: hidden;margin-left:150px">Sign Out</button>
+        </div>
+        <a class="backBtn" href="javascript:history.back()">
+            <i class="fas fa-chevron-left" style='font-size:24px'></i>
+        </a>
+        <a class="title justify-content-center" href="index.html">SkincareMaster</a>
+
+        <span class="manuButton" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; </span>
+    </div>
+    <!-- Search form -->
+    <div class="row justify-content-center">
+        <form class="example col-10">
+            <input type="text" placeholder="Search.." name="search" id="searchField">
+            <button type="button"><i class="fa fa-search" onclick="search()"></i></button>
+        </form>
+    </div>
+    <!--Login form -->
+
+    <form action="action_page.php">
+
+        <div class="containerLogin">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" id="userNameInput" placeholder="Enter Username" name="uname" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" id="passwordInput" placeholder="Enter Password" name="psw" required>
+
+            <button type="button" class="btn btn-dark" onclick="signIn()">Sign In</button>
+
+            <button type="button" class="btn btn-dark" onclick="signUp()">Sign Up</button>
+
+        </div>
+
+
+
+    </form>
+
+
+    <script>
+        $(document).ready(function () {
+            if (sessionStorage.getItem("isLoggedIn") == "yes") {
+                window.location = 'userInfo.html?currentUser=' + sessionStorage.getItem("currentUser");
+            }
+            if(sessionStorage.getItem("isLoggedIn") == "yes"){
+                document.getElementById("signOutBtn").style.visibility="visible";
+            }
+        });
+
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        }
+
+        function signUp() {
+            var userNameField = document.getElementById('userNameInput').value;
+            var passwordField = document.getElementById('passwordInput').value;
+
+            if (userNameField == "" || passwordField == "") {
+                alert("All fields must be filed")
+                return;
+            }
+            if (localStorage.getItem(userNameField)) {
+                alert("User already exist!\nPlease sign in.");
+            }
+            else {
+                localStorage.setItem(userNameField, passwordField);
+                var favoriteList = [];
+                localStorage.setItem(userNameField + "favoriteList", JSON.stringify(favoriteList));
+                alert("Account created! You may now sign in.");
+            }
+
+        }
+
+        function signIn() {
+            var userNameField = document.getElementById('userNameInput').value;
+            var passwordField = document.getElementById('passwordInput').value;
+
+            if (userNameField == "" || passwordField == "") {
+                alert("All fields must be filed")
+                return;
+            }
+            var currentUser = localStorage.getItem(userNameField);
+
+            if (currentUser) {
+                if (passwordField != currentUser) {
+                    alert("Wrong Password!");
+                }
+                else {
+                    sessionStorage.setItem("isLoggedIn", "yes");
+                    sessionStorage.setItem("currentUser", userNameField);
+
+                    // if user is coming form a product detail page
+                    var qs = new URLSearchParams(window.location.search);
+                    var productName = qs.get("product");
+                    if (productName) {
+                        //window.location = 'writeReview.html?product=' + productName;
+                        window.location = 'javascript:history.back()';
+                    }
+                    else {
+                        window.location = 'userInfo.html?currentUser=' + userNameField;
+                    }
+                }
+
+            }
+            else {
+                alert("User does not exist!");
+            }
+        }
+
+        function search() {
+            var input = document.getElementById("searchField").value;
+            var productList = JSON.parse(localStorage.getItem("productList"));
+            var typeList = JSON.parse(localStorage.getItem("typeList"));
+            var foundProduct = false;
+            var foundType = false;
+            var link;
+            var product;
+            for (var i = 0; i < productList.length; i++) {
+                var currData = productList[i];
+
+                if (currData.toUpperCase() === input.toUpperCase()) {
+                    foundProduct = true;
+                    product = productList[i];
+                }
+            }
+            if (!foundProduct) {
+                for (var i = 0; i < typeList.length; i++) {
+                    var currType = typeList[i].type;
+                    if (currType.toUpperCase() === input.toUpperCase()) {
+                        foundType = true;
+                        link = typeList[i].link;
+                    }
+                }
+            }
+            if (foundProduct) {
+                window.location = "productDetail.html?product=" + product;
+            }
+            else if (foundType) {
+                window.location = link;
+            }
+            else {
+                alert("Sorry, item is not found :(");
+            }
+        }
+        function signOut() {
+            sessionStorage.setItem("isLoggedIn", "no");
+            sessionStorage.setItem("currentUser", "");
+            window.location = 'myAccountPage.html';
+        }
+    </script>
+</body>
+
+</html>
